@@ -1,0 +1,6 @@
+docs/build/
+docs/site/
+docs/src/index.md
+*.cov
+*.pyc
+*.swp
