@@ -1,8 +1,8 @@
-l=2.0       # lenght of the beam
-E=210.0e9   # Young's modulus
-I=50/100^4  # Moment of inertia
-A=14/100^2  # Cross section area
-ro=1        # Density
+l=          # lenght of the beam
+E=          # Young's modulus
+I=          # Moment of inertia
+A=          # Cross section area
+ro=         # Density
 ne=         # Number of elements
 BCs=        # Boundary conditions, for example with [1,2,3] displacements 1,2 and 3 =0
 qt=         # Vertical Uniform load
