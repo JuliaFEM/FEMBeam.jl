@@ -6,13 +6,13 @@ I=50/100^4
 A=14/100^2
 ro=1
 ne=1
-BCs=[1 , 2 , 3] # DOFs 1,2 and 3 
+BCs=[1 , 2 , 3] # DOFs 1,2 and 3
 qt=0
 qn=-5.0e3
 F=-0.0e3
 le=l/ne
 nn=ne+1
-nd=3*ne+3
+nd=3*ne+3 # kommentti
 # Local stiffness and mass matrices
 Gp=[-sqrt(3/5) 0 sqrt(3/5)] ; w=[5/9 8/9 5/9] # Gaussian points and weights
 detJ=(2/le)^3
