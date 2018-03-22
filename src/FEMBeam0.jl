@@ -56,7 +56,7 @@ for i in 1:6
 end
 M +=M_temp
 end
-# equivalent forces vector ## I didnt get the integration working with this
+# equivalent forces vector ## I didn't get the integration working with this
 fql=[qt*le/2;      # x
      qn*le/2;      # y
      qn*le^2/12;   # M
