@@ -1,22 +1,20 @@
-# Element stiffness matrice
-# Number of elements ne,number of nodes nn, number of dofs nd
-l=2.0
-E=210.0e9
-I=50/100^4
-A=14/100^2
-ro=1
-ne=1
-BCs=[1 , 2 , 3] # DOFs 1,2 and 3
-qt=0
-qn=-5.0e3
-F=-0.0e3
-le=l/ne
-nn=ne+1
-nd=3*ne+3 # kommentti
+l=2.0       # lenght of the beam
+E=210.0e9   # Young's modulus
+I=50/100^4  # Moment of inertia
+A=14/100^2  # Cross section area
+ro=1        # Density
+ne=         # Number of elements
+BCs=        # Boundary conditions, for example with [1,2,3] displacements 1,2 and 3 =0
+qt=         # Vertical Uniform load
+qn=         # Horizontal uniform load
+F=          # Point force
+le=l/ne     # Lenght of element
+nn=ne+1     # Number of nodes
+nd=3*ne+3   # Number of DOFs
 # Local stiffness and mass matrices
 Gp=[-sqrt(3/5) 0 sqrt(3/5)] ; w=[5/9 8/9 5/9] # Gaussian points and weights
-detJ=(2/le)^3
-function Gauss3(w,ks) w*
+detJ=(2/le)^3 # Jacobian ## Truss dofs should have different detJ ?
+function Gauss3(w,ks) w* # This function and the for loop after this does the integration
     [0.25*A/I 0 0 -0.25*A/I  0 0;
     0 (-3/2 + (3/2)*(1 + ks))^2 (-3/2 + (3/2)*(1 + ks))*(le*(-1 + (1/2)*(1 + ks)) + (1/4)*le*(1 + ks)) 0 (-3/2 + (3/2)*(1 + ks))*(-(1 + ks) + (1/2)*(3 - (1 + ks))) (-3/2 + (3/2)*(1 + ks))*((1/2)*le*(-1 + (1/2)*(1 + ks)) + (1/2)*le*(1 + ks));
     0 (-3/2 + (3/2)*(1 + ks))*(le*(-1 + (1/2)*(1 + ks)) + (1/4)*l*(1 + ks)) (le*(-1 + (1/2)*(1 + ks)) + (1/4)*le*(1 + ks))^2 0 (-(1 + ks) + (1/2)*(3 - (1 + ks)))*(le*(-1 + (1/2)*(1 + ks)) + (1/4)*le*(1 + ks)) (le*(-1 + (1/2)*(1 + ks)) + (1/4)*le*(1 + ks))*((1/2)*le*(-1 + (1/2)*(1 + ks)) + (1/2)*le*(1 + ks));
@@ -40,6 +38,7 @@ for i in 1:6
 end
 K +=K_temp
 end
+# Massmatrix ## I didnt get the integration working with this
 m = ro*A*le/6*[2       0          0            1      0             0;
                0       156/70     22*le/70     0      54/70        -13*le/70;
                0       22*le/70   4*le^2/70    0      13*le/70     -3*le^2/70;
@@ -57,7 +56,7 @@ for i in 1:6
 end
 M +=M_temp
 end
-# equivalent forcevector
+# equivalent forces vector ## I didnt get the integration working with this
 fql=[qt*le/2;      # x
      qn*le/2;      # y
      qn*le^2/12;   # M
@@ -84,7 +83,5 @@ end
 f=[f; b]
 K=[K    A0';
     A0  zeros(size(BCs,1),size(BCs,1))]
+#
 U=K\f
-# Printing out displacement v from the right end of the beam
-println("comsolin vertailuarvo: -0.095238")
-println("                Julia: ", U[end-3-1]) # tulostetaan palkin pään pystysiirtymä
