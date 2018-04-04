@@ -75,16 +75,16 @@ function fembeam(l,E,I,A,ro,ne,BCs,qt,qn,F)
     ## working on this
 
     # Global mass matrix M
-    M=zeros(nd,nd)
-    for a in 0:ne-1
-    M_temp = zeros((nd,nd))
-    for i in 1:6
-        for j in 1:6
-            M_temp[a*3+i,a*3+j]=m[j,i]
-        end
-    end
-    M +=M_temp
-    end
+    # M=zeros(nd,nd)
+    # for a in 0:ne-1
+    # M_temp = zeros((nd,nd))
+    # for i in 1:6
+    #     for j in 1:6
+    #         M_temp[a*3+i,a*3+j]=m[j,i]
+    #     end
+    # end
+    # M +=M_temp
+    # end
     # equivalent forces vector ## I didn't get the integration working with this
     fql=[qt*le/2;      # x
          qn*le/2;      # y
@@ -123,7 +123,7 @@ function fembeam(l,E,I,A,ro,ne,BCs,qt,qn,F)
     U=U_temp[1:nd]
     K=K_temp[1:nd,1:nd]
 
-    return U,K,M,la
+    return U,K,la
 end
 
 end
