@@ -25,8 +25,8 @@ function fembeam(l,E,I,A,ro,ne,BCs,qt,qn,F)
     le=l/ne     # Lenght of element
     nn=ne+1     # Number of nodes
     nd=3*ne+3   # Number of DOFs
-    Gp=[-sqrt(3/7+2/7*sqrt(6/5)) -sqrt(3/7-2/7*sqrt(6/5)) sqrt(3/7-2/7*sqrt(6/5)) sqrt(3/7+2/7*sqrt(6/5))]
-    w=[(18-sqrt(30))/36 (18+sqrt(30))/36 (18+sqrt(30))/36 (18-sqrt(30))/36]
+    Gp=[-1/3*sqrt(5+2*sqrt(10/7)) -1/3*sqrt(5-2*sqrt(10/7)) 0 1/3*sqrt(5-2*sqrt(10/7)) 1/3*sqrt(5+2*sqrt(10/7))]
+    w=[(322-13*sqrt(70))/900 (322+13*sqrt(70))/900 128/225 (322+13*sqrt(70))/900 (322-13*sqrt(70))/900]
     # Integration of the truss elments stiffness matrix
     detJ=2/le
     function tkint(w,xi)
