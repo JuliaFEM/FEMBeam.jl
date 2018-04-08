@@ -9,7 +9,7 @@ using FEMBase
 """
     fembeam(l,E,I,A,ro,ne,BCs,qt,qn,F)
 
-Function integrates
+
 l is lenght of the beam
 E is Young's modulus
 I is Moment of inertia
@@ -30,8 +30,10 @@ function fembeam(l,E,I,A,ro,ne,BCs,qt,qn,F)
     # Integration of the truss elments stiffness matrix
     detJ=2/le
     function tkint(w,xi)
-    w*
-    [0.25 -0.25; -0.25 0.25]
+        dN1=-1/2
+        dN2=1/2
+        dN=[dN1 dN2]
+        w*dN'*dN
     end
     tk=0
     for i = 1:size(Gp,2)
@@ -41,11 +43,12 @@ function fembeam(l,E,I,A,ro,ne,BCs,qt,qn,F)
     # Integration of the 4 DOF beam elments stiffness matrix
     detJ=(2/le)^3
     function bkint(w,xi)
-    w*
-    [(-3/2 + (3/2)*(1 + xi))^2 (-3/2 + (3/2)*(1 + xi))*(le*(-1 + (1/2)*(1 + xi)) + (1/4)*le*(1 + xi)) (-3/2 + (3/2)*(1 + xi))*(-(1 + xi) + (1/2)*(3 - (1 + xi))) (-3/2 + (3/2)*(1 + xi))*((1/2)*le*(-1 + (1/2)*(1 + xi)) + (1/2)*le*(1 + xi));
-    (-3/2 + (3/2)*(1 + xi))*(le*(-1 + (1/2)*(1 + xi)) + (1/4)*le*(1 + xi)) (le*(-1 + (1/2)*(1 + xi)) + (1/4)*le*(1 + xi))^2 (-(1 + xi) + (1/2)*(3 - (1 + xi)))*(le*(-1 + (1/2)*(1 + xi)) + (1/4)*le*(1 + xi)) ((1/2)*le*(-1 + (1/2)*(1 + xi)) + (1/2)*le*(1 + xi))*(le*(-1 + (1/2)*(1 + xi)) + (1/4)*le*(1 + xi));
-    (-3/2 + (3/2)*(1 + xi))*(-(1 + xi) + (1/2)*(3 - (1 + xi))) (-(1 + xi) + (1/2)*(3 - (1 + xi)))*(le*(-1 + (1/2)*(1 + xi)) + (1/4)*le*(1 + xi)) (-(1 + xi) + (1/2)*(3 - (1 + xi)))^2 (-(1 + xi) + (1/2)*(3 - (1 + xi)))*((1/2)*le*(-1 + (1/2)*(1 + xi)) + (1/2)*le*(1 + xi));
-    (-3/2 + (3/2)*(1 + xi))*((1/2)*le*(-1 + (1/2)*(1 + xi)) + (1/2)*le*(1 + xi)) ((1/2)*le*(-1 + (1/2)*(1 + xi)) + (1/2)*le*(1 + xi))*(le*(-1 + (1/2)*(1 + xi)) + (1/4)*le*(1 + xi)) (-(1 + xi) + (1/2)*(3 - (1 + xi)))*((1/2)*le*(-1 + (1/2)*(1 + xi)) + (1/2)*le*(1 + xi)) ((1/2)*le*(-1 + (1/2)*(1 + xi)) + (1/2)*le*(1 + xi))^2]
+        d2N1=(-1.0)*(1 - xi) + 0.5*(2 + xi)
+        d2N2=(-1/2)*le*(1 - xi) + (1/4)*le*(1 + xi)
+        d2N3=(-1.0)*(1 + xi) + 0.5*(2 - xi)
+        d2N4=(1/4)*le*(-1 + xi) + (1/2)*le*(1 + xi)
+        d2N=[d2N1 d2N2 d2N3 d2N4]
+        w*d2N'*d2N
     end
     bk=0
     for i = 1:size(Gp,2)
@@ -70,28 +73,87 @@ function fembeam(l,E,I,A,ro,ne,BCs,qt,qn,F)
     end
     K +=K_temp
     end
-    # Massmatrix
-
-    ## working on this
-
+    # Integration of the truss mass matrix
+    detJ=le/2
+    function tmint(w,xi)
+        N1s=1+(-1/2)*(1+xi)
+        N2s=(1/2)*(1 + xi)
+        Ns=[N1s N2s]
+        w*Ns'*Ns
+    end
+    tm=0
+    for i = 1:size(Gp,2)
+        tm +=tmint(w[i],Gp[i])
+    end
+    tm=ro*A*tm*detJ
+    # Integration of the beam mass matrix
+    detJ=(le/2)
+    function bmint(w,xi)
+        N1=1/4*(1-xi)^2*(2+xi)
+        N2=le/8*(1-xi)^2*(xi+1)
+        N3=1/4*(1+xi)^2*(2-xi)
+        N4=le/8*(1+xi)^2*(xi-1)
+        N=[N1 N2 N3 N4]
+        w*N'*N
+    end
+    bm=0
+    for i = 1:size(Gp,2)
+        bm +=bmint(w[i],Gp[i])
+    end
+    bm=ro*A*bm*detJ
+    # Assembly of the 6 DOF truss-beam mass matrix
+    m=zeros(6,6)
+    m[1,1]=tm[1,1];m[1,4]=tm[1,2];m[4,1]=tm[2,1];m[4,4]=tm[2,2]
+    m[2,2]=bm[1,1];m[2,3]=bm[1,2];m[2,5]=bm[1,3];m[2,6]=bm[1,4]
+    m[3,2]=bm[2,1];m[3,3]=bm[2,2];m[3,5]=bm[2,3];m[3,6]=bm[2,4]
+    m[5,2]=bm[3,1];m[5,3]=bm[3,2];m[5,5]=bm[3,3];m[5,6]=bm[3,4]
+    m[6,2]=bm[4,1];m[6,3]=bm[4,2];m[6,5]=bm[4,3];m[6,6]=bm[4,4]
     # Global mass matrix M
-    # M=zeros(nd,nd)
-    # for a in 0:ne-1
-    # M_temp = zeros((nd,nd))
-    # for i in 1:6
-    #     for j in 1:6
-    #         M_temp[a*3+i,a*3+j]=m[j,i]
-    #     end
-    # end
-    # M +=M_temp
-    # end
-    # equivalent forces vector ## I didn't get the integration working with this
-    fql=[qt*le/2;      # x
-         qn*le/2;      # y
-         qn*le^2/12;   # M
-         qt*le/2;      # x
-         qn*le/2;      # y
-        -qn*le^2/12]   # M
+    M=zeros(nd,nd)
+    for a in 0:ne-1
+    M_temp = zeros((nd,nd))
+    for i in 1:6
+        for j in 1:6
+            M_temp[a*3+i,a*3+j]=m[j,i]
+        end
+    end
+    M +=M_temp
+    end
+    # Integration of the equivalent forces vector
+    # For truss element
+    detJ=le/2
+    function tfqeint(w,xi)
+        N1s=1+(-1/2)*(1+xi)
+        N2s=(1/2)*(1 + xi)
+        Ns=[N1s N2s]
+        w*Ns'
+    end
+    tfqe=zeros(2,1)
+    for i = 1:size(Gp,2)
+        tfqe +=tfqeint(w[i],Gp[i])
+    end
+    tfqe=qt*tfqe*detJ
+    # For 4 DOF beam element
+    detJ=le/2
+    function bfqeint(w,xi)
+        N1=1/4*(1-xi)^2*(2+xi)
+        N2=le/8*(1-xi)^2*(xi+1)
+        N3=1/4*(1+xi)^2*(2-xi)
+        N4=le/8*(1+xi)^2*(xi-1)
+        N=[N1 N2 N3 N4]
+        w*N'
+    end
+    bfqe=zeros(4,1)
+    for i = 1:size(Gp,2)
+        bfqe +=bfqeint(w[i],Gp[i])
+    end
+    bfqe=qn*bfqe*detJ
+    # Assembly of the 6 DOF beam element equivalent forces vector
+    fql=zeros(6,1)
+    fql[1,1],fql[4,1]=tfqe[1,1],tfqe[2,1]
+    fql[2,1],fql[3,1],fql[5,1],fql[6,1]=bfqe[1,1],bfqe[2,1],bfqe[3,1],bfqe[4,1]
+    # Assembly of the global equivalent forces vector with uniformly distributed
+    # load over the whole beam
     fq=zeros(nd)
     fq[1:3]    =fql[1:3]
     fq[nd-2:nd]=fql[4:6]
@@ -100,8 +162,10 @@ function fembeam(l,E,I,A,ro,ne,BCs,qt,qn,F)
         fq[3*i+2]=fql[2]+fql[5]
         fq[3*i+3]=fql[3]+fql[6]
     end
+    # Point forces vector
     f=zeros(nd)
     f[nd-1,1]=F
+    # Adding equivalent forces vector to point forces vector
     f +=fq
     # Lagrange multiplier method
     A0=zeros(size(BCs,1),nd)
@@ -122,8 +186,7 @@ function fembeam(l,E,I,A,ro,ne,BCs,qt,qn,F)
     U=0;K=0
     U=U_temp[1:nd]
     K=K_temp[1:nd,1:nd]
-
-    return U,K,la
+    return U,K,M,la
 end
 
 end
