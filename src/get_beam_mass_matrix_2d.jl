@@ -1,11 +1,6 @@
 # This file is a part of JuliaFEM.
 # License is MIT: see https://github.com/JuliaFEM/FEMBeam.jl/blob/master/LICENSE
 
-""" Beam implementation for JuliaFEM. """
-module FEMBeam
-
-using FEMBase
-
 """
 Function integrates mass matrix for
 6 DOF Euler-Bernoulli beam element in 2d.
@@ -69,6 +64,4 @@ function get_beam_mass_matrix_2d(X1,X2,A,ro)
     # Rotation
     m=B'*m*B
     return m
-end
-
 end

@@ -1,11 +1,6 @@
 # This file is a part of JuliaFEM.
 # License is MIT: see https://github.com/JuliaFEM/FEMBeam.jl/blob/master/LICENSE
 
-""" Beam implementation for JuliaFEM. """
-module FEMBeam
-
-using FEMBase
-
 """
 Function integrates stiffness matrix for
 6 DOF Euler-Bernoulli beam element.
@@ -71,6 +66,4 @@ function get_beam_stiffness_matrix_2d(X1,X2,E,I,A)
     k=B'*k*B
 
     return k
-end
-
 end

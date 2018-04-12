@@ -1,11 +1,6 @@
 # This file is a part of JuliaFEM.
 # License is MIT: see https://github.com/JuliaFEM/FEMBeam.jl/blob/master/LICENSE
 
-""" Beam implementation for JuliaFEM. """
-module FEMBeam
-
-using FEMBase
-
 """
 Function integrates forces vector for
 6 DOF Euler-Bernoulli beam element in 2D.
@@ -70,6 +65,4 @@ function get_beam_forces_vector_2d(X1,X2,qt,qn,f)
     # Adding equivalent forces vector to point forces vector
     f +=fqe
     return f
-end
-
 end

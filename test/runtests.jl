@@ -34,7 +34,9 @@ k_expected =
 
  f_expected=[0.0, -15000.0, -15000.0, 0.0, -15000.0, 15000.0]
 
-k,m,f = FEMBeam.fembeam(X1,X2,E,I,A,ro,qt,qn,f)
+k = FEMBeam.get_beam_stiffness_matrix_2d(X1,X2,E,I,A)
+f = FEMBeam.get_beam_forces_vector_2d(X1,X2,qt,qn,f)
+m = FEMBeam.get_beam_mass_matrix_2d(X1,X2,A,ro)
 
 @test isapprox(k, k_expected)
 @test isapprox(m, m_expected)
@@ -42,7 +44,7 @@ k,m,f = FEMBeam.fembeam(X1,X2,E,I,A,ro,qt,qn,f)
 
 
 
-k,m,f = FEMBeam.fembeam(X1,X2,E,I,A,ro,qt,qn,f)
+
 
 
 end
