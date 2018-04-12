@@ -138,7 +138,7 @@ function fembeam(X1,X2,E,I,A,ro,qt,qn,f)
     for i = 1:size(Gp,2)
         bfq +=bfqint(w[i],Gp[i])
     end
-    bfq=qt*bfq*detJ # tarkista onko qn ja qt oikeissa paikoissa.
+    bfq=qt*bfq*detJ
     # Assembly of the 6 DOF beam element equivalent forces vector fqe
     fqe=zeros(6,1)
     fqe[1,1],fqe[4,1]=tfq[1,1],tfq[2,1]
