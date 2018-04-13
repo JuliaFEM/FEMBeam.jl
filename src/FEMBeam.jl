@@ -5,6 +5,9 @@
 module FEMBeam
 
 using FEMBase
+include("get_beam_stiffness_matrix_2d.jl")
+include("get_beam_forces_vector_2d.jl")
+include("get_beam_mass_matrix_2d.jl")
 
 import FEMBase: get_unknown_field_name,
                 get_formulation_type,
