@@ -28,11 +28,11 @@ function get_beam_mass_matrix_2d(X1,X2,A,ro)
        0      0      0  0      0      1]
     # Integration of the truss mass matrix tm
     detJ=le/2
-    function tmint(w,xi)
+    function tmint(wi::Float64, xi::Float64)
         N1s=1+(-1/2)*(1+xi)
         N2s=(1/2)*(1 + xi)
         Ns=[N1s N2s]
-        w*Ns'*Ns
+        return wi*Ns'*Ns
     end
     tm=zeros(2,2)
     for i = 1:size(Gp,2)
@@ -41,13 +41,13 @@ function get_beam_mass_matrix_2d(X1,X2,A,ro)
     tm=ro*A*tm*detJ
     # Integration of the beam mass matrix bm
     detJ=(le/2)
-    function bmint(w,xi)
+    function bmint(wi::Float64, xi::Float64)
         N1=1/4*(1-xi)^2*(2+xi)
         N2=le/8*(1-xi)^2*(xi+1)
         N3=1/4*(1+xi)^2*(2-xi)
         N4=le/8*(1+xi)^2*(xi-1)
         N=[N1 N2 N3 N4]
-        w*N'*N
+        return wi*N'*N
     end
     bm=zeros(4,4)
     for i = 1:size(Gp,2)
