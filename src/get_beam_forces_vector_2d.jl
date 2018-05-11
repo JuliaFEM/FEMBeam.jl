@@ -30,11 +30,11 @@ function get_beam_forces_vector_2d(X1,X2,qt,qn,f)
     # Integration of the equivalent forces vector
     # For truss element tfq
     detJ=le/2
-    function tfqint(w,xi)
+    function tfqint(wi::Float64, xi::Float64)
         N1s=1+(-1/2)*(1+xi)
         N2s=(1/2)*(1 + xi)
         Ns=[N1s N2s]
-        w*Ns'
+        return wi*Ns'
     end
     tfq=zeros(2,1)
     for i = 1:size(Gp,2)
@@ -43,13 +43,13 @@ function get_beam_forces_vector_2d(X1,X2,qt,qn,f)
     tfq=qn*tfq*detJ
     # For 4 DOF beam element bfqe
     detJ=le/2
-    function bfqint(w,xi)
+    function bfqint(wi::Float64, xi::Float64)
         N1=1/4*(1-xi)^2*(2+xi)
         N2=le/8*(1-xi)^2*(xi+1)
         N3=1/4*(1+xi)^2*(2-xi)
         N4=le/8*(1+xi)^2*(xi-1)
         N=[N1 N2 N3 N4]
-        w*N'
+        return wi*N'
     end
     bfq=zeros(4,1)
     for i = 1:size(Gp,2)

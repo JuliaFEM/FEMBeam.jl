@@ -29,11 +29,11 @@ function get_beam_stiffness_matrix_2d(X1,X2,E,I,A)
        0      0      0  0      0      1]
     # Integration of the truss elements stiffness matrix
     detJ=2/le
-    function tkint(w,xi)
+    function tkint(wi::Float64, ::Float64)
         dN1=-1/2
         dN2=1/2
         dN=[dN1 dN2]
-        w*dN'*dN
+        return wi*dN'*dN
     end
     tk=zeros(2,2)
     for i = 1:size(Gp,2)
@@ -42,13 +42,13 @@ function get_beam_stiffness_matrix_2d(X1,X2,E,I,A)
     tk=detJ*A*E*tk
     # Integration of the 4 DOF beam elments stiffness matrix
     detJ=(2/le)^3
-    function bkint(w,xi)
+    function bkint(wi::Float64, xi::Float64)
         d2N1=(-1.0)*(1 - xi) + 0.5*(2 + xi)
         d2N2=(-1/2)*le*(1 - xi) + (1/4)*le*(1 + xi)
         d2N3=(-1.0)*(1 + xi) + 0.5*(2 - xi)
         d2N4=(1/4)*le*(-1 + xi) + (1/2)*le*(1 + xi)
         d2N=[d2N1 d2N2 d2N3 d2N4]
-        w*d2N'*d2N
+        return wi*d2N'*d2N
     end
     bk=zeros(4,4)
     for i = 1:size(Gp,2)
