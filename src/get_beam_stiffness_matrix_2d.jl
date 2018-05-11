@@ -16,8 +16,8 @@ A = Cross section area
 function get_beam_stiffness_matrix_2d(X1,X2,E,I,A)
     le=norm(X2-X1)                      # Lenght of element
     a=atan((X2[2]-X1[2])/(X2[1]-X1[1])) # Rotation angle of the element
-    nn=2                            # Number of nodes
-    nd=3*1+3                           # Number of DOFs
+    nn=2                                # Number of nodes
+    nd=3*1+3                            # Number of DOFs
     Gp=[-1/3*sqrt(5+2*sqrt(10/7)) -1/3*sqrt(5-2*sqrt(10/7)) 0 1/3*sqrt(5-2*sqrt(10/7)) 1/3*sqrt(5+2*sqrt(10/7))] # Five Gauss integration points
     w=[(322-13*sqrt(70))/900 (322+13*sqrt(70))/900 128/225 (322+13*sqrt(70))/900 (322-13*sqrt(70))/900] # Five Gauss integration weights
     # Rotation matrix
@@ -64,6 +64,5 @@ function get_beam_stiffness_matrix_2d(X1,X2,E,I,A)
     k[6,2]=bk[4,1];k[6,3]=bk[4,2];k[6,5]=bk[4,3];k[6,6]=bk[4,4]
     # Rotation
     k=B'*k*B
-
     return k
 end
