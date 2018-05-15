@@ -27,45 +27,13 @@ function get_integration_points(::Problem{Beam}, ::Element{Seg2})
     return get_quadrature_points(Val{:GLSEG5})
 end
 
-function get_rotation_matrix(X1, X2)
-    x1, y1, z1 = X1
-    x2, y2, z2 = X2
-    L = norm(X2-X1)
-
-    l11 = (x2-x1)/L
-    l21 = (y2-y1)/L
-    l31 = (z2-z1)/L
-    D = sqrt(l11*l11 + l21*l21)
-    println("D = $D")
-    l12 = -l21/D
-    l22 = l11/D
-    l32 = 0.0
-    l13 = -l11*l31/D
-    l23 = -l21*l31/D
-    l33 = D
-    R = [
-        l11 l21 l31
-        l12 l22 l32
-        l13 l23 l33]
-    println(R)
-    return R
-end
-
-function get_rotation_matrix_2(X1, X2, n)
+function get_rotation_matrix(X1, X2, n)
     t = X2-X1
     L = norm(t)
     a = L/2.0
     Pe = [2.0*a 0.0 0.0; 0.0 0.0 -2.0*a; 0.0 1.0 0.0]
     Pg = [t n cross(t,n)]
     T = Pe*inv(Pg)
-    return T
-end
-
-function get_rotation_matrix_3(X1, X2, n1)
-    t = X2-X1
-    t /= norm(t)
-    n2 = cross(n1, t)
-    T = [t n1 n2]
     return T
 end
 
@@ -95,13 +63,8 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
                 T = element("orientation", xi, time)
             elseif haskey(element, "normal")
                 n1 = element("normal", xi, time)
-                #t = (X2-X1)/L
-                #n2 = cross(t,n1)
-                #T = -[t n2 -n1]
-                T = get_rotation_matrix_2(X1, X2, n1)
-                println(T)
+                T = get_rotation_matrix(X1, X2, n1)
             end
-            #T = get_rotation_matrix(X1, X2)
 
             Z = zeros(3,3)
             Rd = [T Z Z Z; Z T Z Z; Z Z T Z; Z Z Z T]
@@ -121,11 +84,11 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
             dN2 =  1/2*s
 
             M1 = xi^3/4 - 3*xi/4 + 1/2
-            M2 = xi^3/4 - 3*xi/4 - 1/2
-            dM1 = (3*xi^2/4 - 3/4)*s
-            dM2 = (3*xi^2/4 - 3/4)*s
+            M2 = -xi^3/4 + 3*xi/4 + 1/2
+            dM1 =  (3*xi^2/4 - 3/4)*s
+            dM2 = (-3*xi^2/4 + 3/4)*s
             d2M1 = 3*xi/2*s^2
-            d2M2 = 3*xi/2*s^2
+            d2M2 = -3*xi/2*s^2
 
             L1 = (xi^3/4 - xi^2/4 - xi/4 + 1/4)/s
             L2 = (xi^3/4 + xi^2/4 - xi/4 - 1/4)/s
@@ -155,30 +118,10 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
             N[3,9]  =  M2
             N[5,9]  = -dM2
             N[4,10] =  N2
-            N[3,11] =  L2
-            N[5,11] = -dL2
-            N[2,12] = -L2
-            N[6,12] =  dL2
-
-            N[1,7]  =  N2
-            N[2,8]  =  M2
-            N[6,8]  =  dM2
-            N[3,9]  =  M2
-            N[5,9]  =  dM2
-            N[4,10] =  N2
             N[3,11] = -L2
             N[5,11] = -dL2
             N[2,12] =  L2
             N[6,12] =  dL2
-
-            # N = [
-            #     N1 0   0   0  0   0   N2 0   0   0  0   0
-            #     0  M1  0   0  0   L1  0  M2  0   0  0   L2
-            #     0  0   M1  0 -L1  0   0  0   M2  0 -L2  0
-            #     0  0   0   N1  0  0   0  0   0   N2 0   0
-            #     0  0   dM1 0 -dL1 0   0  0   dM2 0 -dL2 0
-            #     0  dM1 0   0  0   dL1 0  dM2 0   0  0   dL2
-            #     ]
 
             # Kinematic matrix B
 
@@ -192,9 +135,9 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
 
             # for node 2
             B[1,7] = dN2
-            B[2,8] = d2M2
+            B[2,8] = -d2M2
             B[2,12] = -d2L2
-            B[3,9] = d2M2
+            B[3,9] = -d2M2
             B[3,11] = d2L2
             B[4,10] = dN2
 
@@ -241,7 +184,6 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
 
             fe += w * Rd'*N'*Rf*b_loc * detJ
             fe += w * N'*b_glob * detJ
-            #println(T)
         end
         gdofs = get_gdofs(problem, element)
         add!(problem.assembly.K, gdofs, gdofs, Ke)

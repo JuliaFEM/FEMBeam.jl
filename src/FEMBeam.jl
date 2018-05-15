@@ -35,4 +35,6 @@ export Beam2D
 
 include("beam3d.jl")
 
+export Beam
+
 end

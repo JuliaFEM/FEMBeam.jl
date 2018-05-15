@@ -128,3 +128,7 @@ m_expected=
 -19.6161 -1.20114e-15 -29.4241 -33.1964 -2.03269e-15 39.2321]
 @test isapprox(m, m_expected, rtol=0.0001)
 end
+
+@testset "test beam 3D stiffness" begin
+    include("test_beam3d_ex1.jl")
+end
