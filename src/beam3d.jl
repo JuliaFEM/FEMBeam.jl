@@ -186,9 +186,9 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
             fe += w * N'*b_glob * detJ
         end
         gdofs = get_gdofs(problem, element)
-        add!(problem.assembly.K, gdofs, gdofs, Ke)
-        add!(problem.assembly.M, gdofs, gdofs, Me)
-        add!(problem.assembly.f, gdofs, fe)
+        add!(assembly.K, gdofs, gdofs, Ke)
+        add!(assembly.M, gdofs, gdofs, Me)
+        add!(assembly.f, gdofs, fe)
     end
 
     nothing
@@ -203,11 +203,11 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
         for i=1:3
             if haskey(element, "point force $i")
                 P = element("point force $i", time)
-                add!(problem.assembly.f, gdofs[i], P)
+                add!(assembly.f, gdofs[i], P)
             end
             if haskey(element, "point moment $i")
                 P = element("point moment $i", time)
-                add!(problem.assembly.f, gdofs[3+i], P)
+                add!(assembly.f, gdofs[3+i], P)
             end
         end
     end
