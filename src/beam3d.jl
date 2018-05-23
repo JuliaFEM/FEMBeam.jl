@@ -162,7 +162,27 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
 
             if haskey(element, "density")
                 rho = element("density", xi, time)
-                Me += w * rho*Rd'*(N'*N)*Rd * detJ
+                rhom=rho*A
+                zc=
+                yc=
+                rhot=
+                rhoy=
+                rhoz=
+
+                RHO = zeros(6,6)
+
+                RHO[1,1]=rhom
+                RHO[2,2]=rhom
+                RHO[3,3]=rhom
+                RHO[2,4]=zc*rhom
+                RHO[4,2]=zc*rhom
+                RHO[4,3]=-yc*rhom
+                RHO[3,4]=-yc*rhom
+                RHO[4,4]=rhot
+                RHO[5,5]=rhoy
+                RHO[6,6]=rhoz
+
+                Me += w * Rd'*(N'*RHO*N)*Rd * detJ # migth be wrong
             end
 
             # Assemble distributed loads / moments
