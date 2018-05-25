@@ -24,7 +24,7 @@ function get_unknown_field_name(::Problem{Beam})
 end
 
 function get_integration_points(::Problem{Beam}, ::Element{Seg2})
-    return get_quadrature_points(Val{:GLSEG5})
+    return get_quadrature_points(Val{:GLSEG3})
 end
 
 function get_rotation_matrix(X1, X2, n)
@@ -48,6 +48,7 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
     fe = zeros(12)
     b_loc = zeros(6)
     b_glob = zeros(6)
+    Rho = zeros(6,6)
 
     for element in elements
         fill!(Ke, 0.0)
@@ -77,6 +78,7 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
             fill!(b_glob, 0.0)
             fill!(N, 0.0)
             fill!(D, 0.0)
+            fill!(Rho, 0.0)
 
             N1 = -xi/2 + 1/2
             N2 =  xi/2 + 1/2
@@ -158,11 +160,17 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
 
             Ke += w * Rd'*(B'*D*B)*Rd * detJ
 
-            # Assemble mass matrix
+            # Assemble mass matrix (if density is defined)
 
             if haskey(element, "density")
                 rho = element("density", xi, time)
-                Me += w * rho*Rd'*(N'*N)*Rd * detJ
+                Rho[1,1] = rho*A
+                Rho[2,2] = rho*A
+                Rho[3,3] = rho*A
+                Rho[4,4] = rho*J
+                #Rho[5,5] = I1 # Looks these have only a very small influence to
+                #Rho[6,6] = I2 # result and are neglected in ABAQUS
+                Me += w * Rd'*(N'*Rho*N)*Rd * detJ
             end
 
             # Assemble distributed loads / moments
