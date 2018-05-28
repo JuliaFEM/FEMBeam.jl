@@ -133,6 +133,10 @@ end
     include("test_beam3d_ex1.jl")
 end
 
+@testset "test beam 3D mass matrix" begin
+    include("test_beam3d_mass_matrix.jl")
+end
+
 @testset "test supports" begin
     include("test_supports.jl")
 end
