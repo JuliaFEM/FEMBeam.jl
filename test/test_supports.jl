@@ -41,7 +41,6 @@ for i=1:3
     update!(p1, "fixed rotation $i", 0.0)
 end
 update!(p2, "point moment 1", 10.0e3)
-update!(beam_elements, "distributed load y", -1000.0)
 
 # Create a problem, containing beam elements
 problem = Problem(Beam, "our test beam", 6)
@@ -50,5 +49,6 @@ add_elements!(problem, [p1, p2])
 
 # Create a static analysis
 step = Analysis(Static)
-add_problems!(step, [problem, mpc1])
+add_problems!(step, [problem])
 ls, normu, normla = run!(step)
+@test isapprox(normla, 10000.0)
