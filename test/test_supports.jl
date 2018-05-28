@@ -40,6 +40,7 @@ for i=1:3
     update!(p1, "fixed displacement $i", 0.0)
     update!(p1, "fixed rotation $i", 0.0)
 end
+update!(p2, "point force 1", 10.0e3)
 update!(p2, "point moment 1", 10.0e3)
 
 # Create a problem, containing beam elements
@@ -51,4 +52,4 @@ add_elements!(problem, [p1, p2])
 step = Analysis(Static)
 add_problems!(step, [problem])
 ls, normu, normla = run!(step)
-@test isapprox(normla, 10000.0)
+@test isapprox(normla, sqrt(2*10000.0^2))
