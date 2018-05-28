@@ -217,6 +217,18 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
                 P = element("point moment $i", time)
                 add!(assembly.f, gdofs[3+i], P)
             end
+            if haskey(element, "fixed displacement $i")
+                g = element("fixed displacement $i", time)
+                add!(assembly.C1, gdofs[i], gdofs[i], 1.0)
+                add!(assembly.C2, gdofs[i], gdofs[i], 1.0)
+                add!(assembly.g, gdofs[i], g)
+            end
+            if haskey(element, "fixed rotation $i")
+                g = element("fixed rotation $i", time)
+                add!(assembly.C1, gdofs[3+i], gdofs[3+i], 1.0)
+                add!(assembly.C2, gdofs[3+i], gdofs[3+i], 1.0)
+                add!(assembly.g, gdofs[3+i], g)
+            end
         end
     end
 
