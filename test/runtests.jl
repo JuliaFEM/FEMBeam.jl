@@ -140,3 +140,5 @@ end
 @testset "test supports" begin
     include("test_supports.jl")
 end
+
+@testset "test_rotation_matrix.jl" begin include("test_rotation_matrix.jl") end

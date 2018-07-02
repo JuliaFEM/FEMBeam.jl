@@ -27,12 +27,43 @@ function get_integration_points(::Problem{Beam}, ::Element{Seg2})
     return get_quadrature_points(Val{:GLSEG3})
 end
 
-function get_rotation_matrix(X1, X2, n)
+"""
+    get_rotation_matrix(X1, X2, n_1)
+
+Given element coordinates ``X_1``, ``X_2``  and the first beam section axis
+``n1``, return rotation matrix ``R``, which can be used to define the
+orientation of the beam cross-section.
+
+The orientation of a beam cross-section is defined in terms of local,
+right-handed ``(t, n_1, n_2)`` axis system, where ``t`` is the tangent to the
+axis of the element, positive in the direction from the first to the second node
+of the element, and ``n_1`` and ``n_2`` are basis vectors that define the local
+1- and 2-directions of the cross section. ``n_1`` is referred to as the first
+beam section axis, and ``n_2`` is referred to as the normal to the beam.
+
+Notice that rotation matrix is made of three row vectors which must be linearly
+independent. That is, if tangent vector ``t`` is parallel to ``n_1``, rotation
+matrix cannot be defined because ``t × n_2 = 0``.
+
+Connection to 2d-beams: for beams in a plane the `n_1`-direction is always
+``(0.0, 0.0, -1.0)``, which is normal to the plane in which the motion occurs.
+therefore, planar beams can bend only about the first beam section axis.
+"""
+function get_rotation_matrix(X1, X2, n1)
     t = X2-X1
     L = norm(t)
     a = L/2.0
     Pe = [2.0*a 0.0 0.0; 0.0 0.0 -2.0*a; 0.0 1.0 0.0]
-    Pg = [t n cross(t,n)]
+    n2 = cross(t, n1)
+    if iszero(n2)
+        error("get_rotation_matrix(X1, X2, n1) = get_rotation_matrix($X1, $X2, $n1) ",
+              "is failing because the first beam section axis n1 is parallel ",
+              "to the tangent vector t. To fix this issue and construct an ",
+              "orthonormal set of linearly independent basis vectors, choose ",
+              "n1 such that cross-product t × n1 gives a non-zero answer. Now, ",
+              "cross($t, $n1) = $n2.")
+    end
+    Pg = [t n1 n2]
     T = Pe*inv(Pg)
     return T
 end
