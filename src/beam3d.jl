@@ -10,7 +10,7 @@ Euler-Bernoulli beam, 3d formulation.
 - P1 and P1 for loads in beam normal 1 and normal 2 direction
 - PX, PY, PZ for loads in global coordinate system
 """
-type Beam <: FieldProblem
+mutable struct Beam <: FieldProblem
 end
 
 using FEMQuad: get_quadrature_points
