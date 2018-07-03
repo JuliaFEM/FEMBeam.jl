@@ -13,17 +13,13 @@ Euler-Bernoulli beam, 3d formulation.
 type Beam <: FieldProblem
 end
 
-import FEMBase: get_unknown_field_name,
-                get_formulation_type,
-                assemble_elements!,
-                get_integration_points
 using FEMQuad: get_quadrature_points
 
-function get_unknown_field_name(::Problem{Beam})
+function FEMBase.get_unknown_field_name(::Problem{Beam})
     return "displacement"
 end
 
-function get_integration_points(::Problem{Beam}, ::Element{Seg2})
+function FEMBase.get_integration_points(::Problem{Beam}, ::Element{Seg2})
     return get_quadrature_points(Val{:GLSEG3})
 end
 
@@ -68,8 +64,8 @@ function get_rotation_matrix(X1, X2, n1)
     return T
 end
 
-function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
-                            elements::Vector{Element{Seg2}}, time::Float64)
+function FEMBase.assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
+                                    elements::Vector{Element{Seg2}}, time::Float64)
 
     B = zeros(4, 12)
     N = zeros(6, 12)
@@ -230,12 +226,12 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
         add!(assembly.f, gdofs, fe)
     end
 
-    nothing
+    return nothing
 
 end
 
-function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
-                            elements::Vector{Element{Poi1}}, time::Float64)
+function FEMBase.assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
+                                    elements::Vector{Element{Poi1}}, time::Float64)
 
     for element in elements
         gdofs = get_gdofs(problem, element)
@@ -263,6 +259,6 @@ function assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
         end
     end
 
-    nothing
+    return nothing
 
 end
