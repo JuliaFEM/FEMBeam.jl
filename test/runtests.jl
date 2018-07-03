@@ -1,10 +1,8 @@
 # This file is a part of JuliaFEM.
 # License is MIT: see https://github.com/JuliaFEM/FEMBeam.jl/blob/master/LICENSE
 
-using FEMBase
 using FEMBeam
-
-using Base.Test
+using FEMBase.Test
 
 @testset "Beam 1 Stiffness matrix" begin
 X1=[0.0,0.0]; X2=[0.0,6.5]
@@ -129,6 +127,10 @@ m_expected=
 @test isapprox(m, m_expected, rtol=0.0001)
 end
 
+@testset "test beam 2d" begin
+    include("test_beam2d.jl")
+end
+
 @testset "test beam 3D stiffness" begin
     include("test_beam3d_ex1.jl")
 end
@@ -141,4 +143,6 @@ end
     include("test_supports.jl")
 end
 
-@testset "test_rotation_matrix.jl" begin include("test_rotation_matrix.jl") end
+@testset "test_rotation_matrix.jl" begin
+    include("test_rotation_matrix.jl")
+end
