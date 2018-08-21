@@ -13,14 +13,12 @@ Euler-Bernoulli beam, 3d formulation.
 type Beam <: FieldProblem
 end
 
-using FEMQuad: get_quadrature_points
-
 function FEMBase.get_unknown_field_name(::Problem{Beam})
     return "displacement"
 end
 
 function FEMBase.get_integration_points(::Problem{Beam}, ::Element{Seg2})
-    return get_quadrature_points(Val{:GLSEG3})
+    return FEMBase.get_quadrature_points(Val{:GLSEG3})
 end
 
 """
