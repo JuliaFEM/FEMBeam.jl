@@ -14,15 +14,15 @@ nel = 2
 
 # Create uniform 1d mesh for beam elements, first nodes:
 X = Dict{Int64, Vector{Float64}}()
-for (j, x) in enumerate(linspace(0, L, nel+1))
+for (j, x) in enumerate(range(0.0, stop=L, length=nel+1))
     X[j] = [x, 0.0, 0.0]
 end
 nnodes = length(X)
-info("Number of nodes: $nnodes")
+@debug("Number of nodes: $nnodes")
 
 # Create beam elements
 beam_elements = [Element(Seg2, [j, j+1]) for j=1:nel]
-info("Number of elements: ", length(beam_elements))
+@debug("Number of elements: ", length(beam_elements))
 update!(beam_elements, "geometry", X)
 update!(beam_elements, "youngs modulus", 210.0e6)
 update!(beam_elements, "shear modulus", 84.0e6)

@@ -2,10 +2,9 @@
 # License is MIT: see https://github.com/JuliaFEM/FEMBeam.jl/blob/master/LICENSE
 
 """
-Function integrates stiffness matrix for
-6 DOF Euler-Bernoulli beam element.
+    get_beam_stiffness_matrix_2d(X1, X2, E, I, A)
 
-    get_beam_stiffness_matrix_2d(X1,X2,E,I,A)
+Function integrates stiffness matrix for 6 DOF Euler-Bernoulli beam element.
 
 X1 = beams left node coordinates
 X2 = beams right node coordinates

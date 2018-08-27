@@ -26,7 +26,7 @@ assemble!(problem, 0.0)
 # ABAQUS uses cubic interpolation in axial direction and our implementation
 # uses linear; for that reasons results will differ for dofs 1 and 7
 axial_dofs = [1, 7]
-K = full(problem.assembly.K)
+K = Matrix(sparse(problem.assembly.K))
 K[axial_dofs, axial_dofs] *= 1.2
 K_expected = read_mtx_from_file(@test_resource("model_STIF1.mtx"))
 if !isapprox(K, K_expected)
@@ -45,7 +45,7 @@ end
 
 # ABAQUS uses cubic interpolation in axial direction and our implementation
 # uses linear; for that reasons results will differ for dofs 1 and 7
-M = full(problem.assembly.M)
+M = Matrix(sparse(problem.assembly.M))
 M[axial_dofs, axial_dofs] += 2.75*[1.0 -1.0; -1.0 1.0]
 M_expected = read_mtx_from_file(@test_resource("model_MASS1.mtx"))
 if !isapprox(M, M_expected)

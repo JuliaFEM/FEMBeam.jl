@@ -49,7 +49,7 @@ t = """
 function read_mtx(data; dim=0)
     if dim == 0
         for ln in eachline(copy(data))
-            i,idof,j,jdof,value = map(parse, split(ln, ','))
+            i,idof,j,jdof,value = map(Meta.parse, split(ln, ','))
             dim = max(dim, idof, jdof)
         end
     end
@@ -57,7 +57,7 @@ function read_mtx(data; dim=0)
     J = Int64[]
     V = Float64[]
     for ln in eachline(data)
-        i,idof,j,jdof,value = map(parse, split(ln, ','))
+        i,idof,j,jdof,value = map(Meta.parse, split(ln, ','))
         if i < 1 || j < 1
             continue
         end
@@ -65,7 +65,7 @@ function read_mtx(data; dim=0)
         push!(J, (j-1)*dim+jdof)
         push!(V, value)
     end
-    A = full(sparse(I, J, V))
+    A = Matrix(sparse(I, J, V))
     A += transpose(tril(A,-1))
     return A
 end

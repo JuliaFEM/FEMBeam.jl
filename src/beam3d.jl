@@ -2,20 +2,15 @@
 # License is MIT: see https://github.com/JuliaFEM/FEMBeam.jl/blob/master/LICENSE
 
 """
-    Beam()
-
-Euler-Bernoulli beam, 3d formulation.
+    Beam - Euler-Bernoulli beam for 3d problems
 
 # Load types for distributed load
 - P1 and P1 for loads in beam normal 1 and normal 2 direction
 - PX, PY, PZ for loads in global coordinate system
 """
-mutable struct Beam <: FieldProblem
-end
+struct Beam <: FieldProblem end
 
-function FEMBase.get_unknown_field_name(::Problem{Beam})
-    return "displacement"
-end
+FEMBase.get_unknown_field_name(::Problem{Beam}) = "displacement"
 
 function FEMBase.get_integration_points(::Problem{Beam}, ::Element{Seg2})
     return FEMBase.get_quadrature_points(Val{:GLSEG3})
