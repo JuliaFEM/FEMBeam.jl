@@ -4,7 +4,6 @@
 using FEMBeam
 using FEMBase.Test
 
-
 # ABAQUS code to test:
 # *NODE
 #  1, 0.0, 0.0, 0.0
@@ -57,11 +56,11 @@ update!(beam, "cross-section area", A)
 update!(beam, "torsional moment of inertia 1", I1)
 update!(beam, "torsional moment of inertia 2", I2)
 update!(beam, "polar moment of inertia", J)
-update!(beam, "orientation", eye(3))
+update!(beam, "orientation", [1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0])
 problem = Problem(Beam, "beam", 6)
 add_elements!(problem, [beam])
 assemble!(problem, 0.0)
-K = full(problem.assembly.K)
+K = Matrix(sparse(problem.assembly.K))
 K_expected = [
     E*A/L 0 0 0 0 0 -E*A/L 0 0 0 0 0
     0 12*E*Iz/L^3 0 0 0 6*E*Iz/L^2 0 -12*E*Iz/L^3 0 0 0 6*E*Iz/L^2
@@ -117,8 +116,8 @@ function solution(X2, n, q1, q2, qx, qy, qz; T=nothing)
     problem = Problem(Beam, "example 1", 6)
     add_elements!(problem, [beam])
     assemble!(problem, time)
-    K = full(problem.assembly.K)
-    f = full(problem.assembly.f)
+    K = Matrix(sparse(problem.assembly.K))
+    f = Vector(sparse(problem.assembly.f)[:])
     u = zeros(12)
     fd = 7:12
     u[fd] = K[fd,fd]\f[fd]

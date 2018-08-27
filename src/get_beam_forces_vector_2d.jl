@@ -2,10 +2,9 @@
 # License is MIT: see https://github.com/JuliaFEM/FEMBeam.jl/blob/master/LICENSE
 
 """
-Function integrates forces vector for
-6 DOF Euler-Bernoulli beam element in 2D.
+    get_beam_forces_vector_2d(X1, X2, qt, qn, f)
 
-    get_beam_forces_vector_2d(X1,X2,qt,qn,f)
+Function integrates forces vector for 6 DOF Euler-Bernoulli beam element in 2D.
 
 X1 = beams left node coordinates
 X2 = beams right node coordinates
@@ -13,7 +12,7 @@ qt = Tangential uniformly distributed load
 qn = Normal uniformly distributed load
 f = Point forces vector in global coordinates
 """
-function get_beam_forces_vector_2d(X1,X2,qt,qn,f)
+function get_beam_forces_vector_2d(X1, X2, qt, qn, f)
     le=norm(X2-X1)                      # Lenght of element
     a=atan((X2[2]-X1[2])/(X2[1]-X1[1])) # Rotation angle of the element
     nn=2                            # Number of nodes

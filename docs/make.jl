@@ -3,9 +3,8 @@
 
 using Documenter, FEMBeam
 
-makedocs(modules=[FEMBeam],
+makedocs(modules = [FEMBeam],
          format = :html,
          checkdocs = :all,
          sitename = "FEMBeam.jl",
-         pages = ["index.md"]
-        )
+         pages = ["index.md"])

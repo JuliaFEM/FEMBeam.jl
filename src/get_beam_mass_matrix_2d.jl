@@ -2,10 +2,9 @@
 # License is MIT: see https://github.com/JuliaFEM/FEMBeam.jl/blob/master/LICENSE
 
 """
-Function integrates mass matrix for
-6 DOF Euler-Bernoulli beam element in 2d.
+    get_beam_mass_matrix_2d(X1, X2, A, ro)
 
-    get_beam_mass_matrix_2d(X1,X2,A,ro)
+Function integrates mass matrix for 6 DOF Euler-Bernoulli beam element in 2d.
 
 X1 = beams left node coordinates
 X2 = beams right node coordinates
