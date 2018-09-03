@@ -2,10 +2,16 @@
 # License is MIT: see https://github.com/JuliaFEM/FEMBeam.jl/blob/master/LICENSE
 
 """
-    FEMBeam - Beam implementation for JuliaFEM
+    FEMBeam
+
+Beam implementation for JuliaFEM.
 
 # Supported beams
-- Euler-Bernoulli beam in 3d
+
+- Euler-Bernoulli beam in 3D. Approximation of displacement field is done using
+  Hermite C1-continuous interpolation polynomials in bending and C0-continuous
+  Lagrange interpolation polynomials is axial direction and twisting. Each node
+  has 6 degrees of freedom.
 
 """
 module FEMBeam

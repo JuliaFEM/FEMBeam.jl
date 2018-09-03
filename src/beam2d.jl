@@ -2,13 +2,13 @@
 # License is MIT: see https://github.com/JuliaFEM/FEMBeam.jl/blob/master/LICENSE
 
 """
-    Beam2D - Euler-Bernoulli beam for 2d problems
+    Beam2D
+
+Euler-Bernoulli beam for 2d problems.
 """
 struct Beam2D <: FieldProblem end
 
-function FEMBase.get_unknown_field_name(::Problem{Beam2D})
-    return "displacement"
-end
+FEMBase.get_unknown_field_name(::Problem{Beam2D}) = "displacement"
 
 function FEMBase.assemble_elements!(::Problem{Beam2D}, ::Assembly,
                                elements::Vector{Element{B}}, ::Float64) where B
