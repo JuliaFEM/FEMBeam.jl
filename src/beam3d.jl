@@ -13,7 +13,7 @@ struct Beam <: FieldProblem end
 FEMBase.get_unknown_field_name(::Problem{Beam}) = "displacement"
 
 function FEMBase.get_integration_points(::Problem{Beam}, ::Element{Seg2})
-    return FEMBase.get_quadrature_points(Val{:GLSEG3})
+    return FEMQuad.get_quadrature_points(Val{:GLSEG3})
 end
 
 """
@@ -77,13 +77,14 @@ function FEMBase.assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
 
         for (w, xi) in get_integration_points(problem, element)
 
+            xi1 = xi[1]
             X1, X2 = element("geometry", time)
             L = norm(X2-X1)
 
             if haskey(element, "orientation")
-                T = element("orientation", xi, time)
+                T = element("orientation", xi1, time)
             elseif haskey(element, "normal")
-                n1 = element("normal", xi, time)
+                n1 = element("normal", xi1, time)
                 T = get_rotation_matrix(X1, X2, n1)
             end
 
@@ -100,24 +101,24 @@ function FEMBase.assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
             fill!(D, 0.0)
             fill!(Rho, 0.0)
 
-            N1 = -xi/2 + 1/2
-            N2 =  xi/2 + 1/2
+            N1 = -xi1/2 + 1/2
+            N2 =  xi1/2 + 1/2
             dN1 = -1/2*s
             dN2 =  1/2*s
 
-            M1 = xi^3/4 - 3*xi/4 + 1/2
-            M2 = -xi^3/4 + 3*xi/4 + 1/2
-            dM1 =  (3*xi^2/4 - 3/4)*s
-            dM2 = (-3*xi^2/4 + 3/4)*s
-            d2M1 = 3*xi/2*s^2
-            d2M2 = -3*xi/2*s^2
+            M1 = xi1^3/4 - 3*xi1/4 + 1/2
+            M2 = -xi1^3/4 + 3*xi1/4 + 1/2
+            dM1 =  (3*xi1^2/4 - 3/4)*s
+            dM2 = (-3*xi1^2/4 + 3/4)*s
+            d2M1 = 3*xi1/2*s^2
+            d2M2 = -3*xi1/2*s^2
 
-            L1 = (xi^3/4 - xi^2/4 - xi/4 + 1/4)/s
-            L2 = (xi^3/4 + xi^2/4 - xi/4 - 1/4)/s
-            dL1 = (3*xi^2/4 - xi/2 - 1/4)
-            dL2 = (3*xi^2/4 + xi/2 - 1/4)
-            d2L1 = (3*xi - 1)/2*s
-            d2L2 = (3*xi + 1)/2*s
+            L1 = (xi1^3/4 - xi1^2/4 - xi1/4 + 1/4)/s
+            L2 = (xi1^3/4 + xi1^2/4 - xi1/4 - 1/4)/s
+            dL1 = (3*xi1^2/4 - xi1/2 - 1/4)
+            dL2 = (3*xi1^2/4 + xi1/2 - 1/4)
+            d2L1 = (3*xi1 - 1)/2*s
+            d2L2 = (3*xi1 + 1)/2*s
 
             # Shape functions N
 
@@ -165,12 +166,12 @@ function FEMBase.assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
 
             # Material matrix D
 
-            E = element("youngs modulus", xi, time)
-            A = element("cross-section area", xi, time)
-            I1 = element("torsional moment of inertia 1", xi, time)
-            I2 = element("torsional moment of inertia 2", xi, time)
-            G = element("shear modulus", xi, time)
-            J = element("polar moment of inertia", xi, time)
+            E = element("youngs modulus", xi1, time)
+            A = element("cross-section area", xi1, time)
+            I1 = element("torsional moment of inertia 1", xi1, time)
+            I2 = element("torsional moment of inertia 2", xi1, time)
+            G = element("shear modulus", xi1, time)
+            J = element("polar moment of inertia", xi1, time)
             D[1,1] = E*A
             D[2,2] = E*I1
             D[3,3] = E*I2
@@ -183,7 +184,7 @@ function FEMBase.assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
             # Assemble mass matrix (if density is defined)
 
             if haskey(element, "density")
-                rho = element("density", xi, time)
+                rho = element("density", xi1, time)
                 Rho[1,1] = rho*A
                 Rho[2,2] = rho*A
                 Rho[3,3] = rho*A
@@ -195,19 +196,19 @@ function FEMBase.assemble_elements!(problem::Problem{Beam}, assembly::Assembly,
 
             # Assemble distributed loads / moments
             if haskey(element, "distributed load 1")
-                b_loc[3] = element("distributed load 1", xi, time)
+                b_loc[3] = element("distributed load 1", xi1, time)
             end
             if haskey(element, "distributed load 2")
-                b_loc[2] = element("distributed load 2", xi, time)
+                b_loc[2] = element("distributed load 2", xi1, time)
             end
             if haskey(element, "distributed load x")
-                b_glob[1] = element("distributed load x", xi, time)
+                b_glob[1] = element("distributed load x", xi1, time)
             end
             if haskey(element, "distributed load y")
-                b_glob[2] = element("distributed load y", xi, time)
+                b_glob[2] = element("distributed load y", xi1, time)
             end
             if haskey(element, "distributed load z")
-                b_glob[3] = element("distributed load z", xi, time)
+                b_glob[3] = element("distributed load z", xi1, time)
             end
 
             fe += w * Rd'*N'*Rf*b_loc * detJ
