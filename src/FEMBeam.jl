@@ -16,7 +16,7 @@ Beam implementation for JuliaFEM.
 """
 module FEMBeam
 
-using FEMBase, LinearAlgebra, SparseArrays
+using FEMBase, FEMQuad, LinearAlgebra, SparseArrays
 
 include("get_beam_stiffness_matrix_2d.jl")
 include("get_beam_forces_vector_2d.jl")
