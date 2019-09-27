@@ -3,8 +3,6 @@
 
 using FEMBase, FEMBeam, Test, LinearAlgebra, SparseArrays
 
-include("../docs/make.jl")
-
 @testset "FEMBeam.jl" begin
 
     @testset "test beam 2d" begin
@@ -28,5 +26,3 @@ include("../docs/make.jl")
     end
 
 end
-
-include("../docs/make.jl")

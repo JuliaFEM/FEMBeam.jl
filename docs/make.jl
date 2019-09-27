@@ -4,7 +4,7 @@
 using Documenter, FEMBeam
 
 makedocs(modules = [FEMBeam],
-         format = :html,
+         format = Documenter.HTML(),
          checkdocs = :all,
          sitename = "FEMBeam.jl",
          pages = ["index.md"])
