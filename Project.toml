@@ -1,10 +1,11 @@
 name = "FEMBeam"
 uuid = "962f5c4a-ca9e-56d3-a659-14f0d9baaf78"
-version = "0.3.1"
 author = ["Jukka Aho <ahojukka5@gmail.com>", "Ville Jämsä <vjamsa@live.fi>"]
+version = "0.3.1"
 
 [deps]
 FEMBase = "fbcbbc08-f1bf-5204-9233-b69f5d396135"
+FEMQuad = "be8e8821-3f6f-54c2-987c-d2773c3a52cb"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
