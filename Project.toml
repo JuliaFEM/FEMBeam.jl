@@ -1,0 +1,21 @@
+name = "FEMBeam"
+uuid = "962f5c4a-ca9e-56d3-a659-14f0d9baaf78"
+version = "0.3.1"
+author = ["Jukka Aho <ahojukka5@gmail.com>", "Ville Jämsä <vjamsa@live.fi>"]
+
+[deps]
+FEMBase = "fbcbbc08-f1bf-5204-9233-b69f5d396135"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
+[compat]
+julia = "≥ 1.0.0"
+
+[extras]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Documenter", "LinearAlgebra", "SparseArrays", "Test"]
